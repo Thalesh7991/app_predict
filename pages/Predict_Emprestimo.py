@@ -4,15 +4,15 @@ import pandas as pd
 import json
 
 
-# def predict_emprestimo(data):
-#     print('Fazendo a requisição!!!')
-#     url = 'https://predict-emprestimo.onrender.com/empresa/predict'
-#     header = {'Content-type': 'application/json' }
-#     r = requests.post( url, data=data, headers=header )
-#     print( 'Status Code {}'.format( r.status_code ) )
-#     prediction = r.json()[0]['prediction']
-#     #print(r)
-#     return prediction
+def predict_emprestimo(data):
+    print('Fazendo a requisição!!!')
+    url = 'https://predict-emprestimo.onrender.com/empresa/predict'
+    header = {'Content-type': 'application/json' }
+    r = requests.post( url, data=data, headers=header )
+    print( 'Status Code {}'.format( r.status_code ) )
+    prediction = r.json()[0]['prediction']
+    print(prediction)
+    return prediction
 
 
 # Configurando a página do Streamlit
@@ -49,13 +49,13 @@ with col6:
     # Verificando se tanto a renda quanto o valor do empréstimo são diferentes de zero
     if renda != 0 and valor_emprestimo != 0:
         # Calculando a relação empréstimo/renda
-        valor_relacao_emprestimo_renda = int(renda) / int(valor_emprestimo)
+        valor_relacao_emprestimo_renda = int(valor_emprestimo)/int(renda) 
     else:
         # Definindo um valor padrão para evitar a divisão por zero
         valor_relacao_emprestimo_renda = 0
 
     # Definindo o campo de entrada com o valor calculado
-    relacao_emprestimo_renda = st.number_input('Insira a Relação Empréstimo Renda', value=valor_relacao_emprestimo_renda, step=1, format="%d", disabled=True)
+    relacao_emprestimo_renda = st.text_input('Insira a Relação Empréstimo Renda', value=str(valor_relacao_emprestimo_renda), disabled=True, key='valor_relacao_emprestimo_renda')
 
 
 
@@ -63,7 +63,8 @@ with col7:
     historico_credito = st.number_input('Insira o Histórico de Crédito')
 
 with col8:
-    posse_casa = st.text_input('Insira o Tipo de Posse de Casa')
+    #posse_casa = st.text_input('Insira o Tipo de Posse de Casa')
+    posse_casa = st.selectbox('Insira o Tipo de Posse de Casa', (['RENT', 'OWN', 'MORTGAGE', 'OTHER']))
 
 col9, col10, col11 = st.columns(3)
 
@@ -111,11 +112,12 @@ data = json.dumps( df.to_dict( orient='records' ) )
 
 
 if st.button('Previsão'):
-    #previsao = predict_emprestimo(data)
-    #if previsao != 0:
-    st.markdown("### Nosso modelo de Inteligência Artificial Recomenda a não disponibilização de crédito para esse cliente, pois ele possui uma alta probabilidade de inadimplência")
-    #else:
-        #st.markdown("### Nosso modelo de Inteligência Artificial Recomenda a disponibilização de crédito para esse cliente, pois ele possui uma baixa probabilidade de inadimplência")
+    with st.spinner('Nosso Modelo de Inteligência Artificial Está Analisando os Dados....'):
+        previsao = predict_emprestimo(data)
+        if previsao != 0:
+            st.markdown("<h4> <p style='color:red;'> Nosso modelo de Inteligência Artificial Recomenda a não disponibilização de crédito para esse cliente, pois ele possui uma alta probabilidade de inadimplência</p></h4>", unsafe_allow_html=True)
+        else:
+            st.markdown("<p style='color:green;'>### Nosso modelo de Inteligência Artificial Recomenda a disponibilização de crédito para esse cliente, pois ele possui uma baixa probabilidade de inadimplência </p>", unsafe_allow_html=True)
 
 
 
