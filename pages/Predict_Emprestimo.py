@@ -115,10 +115,6 @@ if st.button('Previsão'):
     with st.spinner('Nosso Modelo de Inteligência Artificial Está Analisando os Dados....'):
         previsao = predict_emprestimo(data)
         if previsao != 0:
-            st.markdown("<h4> <p style='color:red;'> Nosso modelo de Inteligência Artificial Recomenda a não disponibilização de crédito para esse cliente, pois ele possui uma alta probabilidade de inadimplência</p></h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='color:red;'>Nosso modelo de Inteligência Artificial recomenda não disponibilizar crédito para esse cliente, pois ele possui uma alta probabilidade de inadimplência.</h4>", unsafe_allow_html=True)
         else:
-            st.markdown("<p style='color:green;'>### Nosso modelo de Inteligência Artificial Recomenda a disponibilização de crédito para esse cliente, pois ele possui uma baixa probabilidade de inadimplência </p>", unsafe_allow_html=True)
-
-
-
-
+            st.markdown("<h4 style='color:green;'>Nosso modelo de Inteligência Artificial recomenda disponibilizar crédito para esse cliente, pois ele possui uma baixa probabilidade de inadimplência.</h4>", unsafe_allow_html=True)
